@@ -1,6 +1,6 @@
 /* ============================================ */
-/* BPMN Process Designer — Main App Logic v3     */
-/* Robust NLP: diacritics + non-diacritics       */
+/* BPMN Process Designer — Main App Logic v4     */
+/* Bulletproof NLP: string-based condtion detect */
 /* ============================================ */
 
 let currentStep = 1;
@@ -21,87 +21,73 @@ function goToStep(step) {
 function analyzeProcess() {
     const desc = document.getElementById('processDesc').value.trim();
     if (!desc) { alert('Vui lòng nhập mô tả quy trình.'); return; }
-    const steps = parseDescription(desc);
-    renderLogicTable(steps);
+    renderLogicTable(parseDescription(desc));
     goToStep(2);
 }
 
-// ===== NLP PARSER v3 — Robust diacritic + non-diacritic =====
-// Condition prefixes: nếu, neu, if, khi, when, truong hop
-const COND_PREFIXES = /^(n[eếê]u|if|khi|when|tr[uưừ][oôờ]ng\s*h[oợ]p|trong\s*tr[uưừ][oôờ]ng\s*h[oợ]p)\s+/i;
-const COND_COLON_RE = /^(n[eếê]u|if|khi|when|tr[uưừ][oôờ]ng\s*h[oợ]p)\s+([^:]+):\s*(.+)$/i;
+// ===== NLP PARSER v4 — Bulletproof condition detection =====
+// Simple string startsWith check — works for any encoding
+function isConditionPrefix(text) {
+    const lower = text.toLowerCase().trim();
+    const prefixes = [
+        'neu ', 'nếu ', 'nêu ',
+        'if ', 'khi ', 'when ',
+        'truong hop ', 'trường hợp ',
+        'trong truong hop ', 'trong trường hợp '
+    ];
+    return prefixes.some(p => lower.startsWith(p));
+}
 
-// Known actors — both diacritic and non-diacritic
+function stripCondPrefix(text) {
+    const lower = text.toLowerCase().trim();
+    const prefixes = [
+        'trong truong hop ', 'trong trường hợp ',
+        'truong hop ', 'trường hợp ',
+        'neu ', 'nếu ', 'nêu ',
+        'if ', 'khi ', 'when '
+    ];
+    for (const p of prefixes) {
+        if (lower.startsWith(p)) return text.trim().substring(p.length).trim();
+    }
+    return text.trim();
+}
+
 const KNOWN_ACTORS = [
-    'Nhân viên bán hàng', 'Nhan vien ban hang',
-    'Đơn vị vận chuyển', 'Don vi van chuyen',
-    'Nhà cung cấp', 'Nha cung cap',
-    'Bộ phận kế toán', 'Bo phan ke toan',
-    'Bộ phận kho', 'Bo phan kho',
-    'Phòng nhân sự', 'Phong nhan su',
-    'Nhân viên', 'Nhan vien',
-    'Khách hàng', 'Khach hang',
-    'Quản lý', 'Quan ly',
-    'Hệ thống', 'He thong',
-    'Kế toán', 'Ke toan',
-    'Giám đốc', 'Giam doc',
+    'Nhan vien ban hang', 'Nhân viên bán hàng',
+    'Don vi van chuyen', 'Đơn vị vận chuyển',
+    'Nha cung cap', 'Nhà cung cấp',
+    'Bo phan ke toan', 'Bộ phận kế toán',
+    'Bo phan kho', 'Bộ phận kho',
+    'Phong nhan su', 'Phòng nhân sự',
+    'Nhan vien', 'Nhân viên',
+    'Khach hang', 'Khách hàng',
+    'Quan ly', 'Quản lý',
+    'He thong', 'Hệ thống',
+    'Ke toan', 'Kế toán',
+    'Giam doc', 'Giám đốc',
     'Admin', 'User', 'Manager', 'Customer', 'System',
-    'Shipper', 'Kho', 'Bộ phận', 'Bo phan'
-].sort((a, b) => b.length - a.length); // Longest first
+    'Shipper', 'Kho', 'Bo phan', 'Bộ phận'
+].sort((a, b) => b.length - a.length);
 
 function parseDescription(text) {
-    const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l);
     const steps = [];
     let lastActor = 'Hệ thống';
 
     lines.forEach(line => {
-        line = line.replace(/^\d+[\.\)]\s*/, ''); // Remove numbering
+        line = line.replace(/^\d+[\.\)]\s*/, '');
         let actor = '', action = '', condition = '';
 
-        // CASE 1: "Nếu/Neu/If xxx: rest" (condition with colon)
-        const condMatch = line.match(COND_COLON_RE);
-        if (condMatch) {
-            condition = condMatch[1] + ' ' + condMatch[2].trim();
-            const rest = condMatch[3].trim();
-            const aa = extractAA(rest, lastActor);
-            actor = aa.actor;
-            action = aa.action;
-            lastActor = actor;
-            steps.push({ actor, action, condition });
-            return;
-        }
+        const colonIdx = line.indexOf(':');
 
-        // CASE 2: Line starts with condition keyword (no colon)
-        if (COND_PREFIXES.test(line)) {
-            // Check if there's a colon further in
-            const colonIdx = line.indexOf(':');
-            if (colonIdx > 0) {
-                const before = line.substring(0, colonIdx).trim();
-                const after = line.substring(colonIdx + 1).trim();
+        if (colonIdx > 0) {
+            const before = line.substring(0, colonIdx).trim();
+            const after = line.substring(colonIdx + 1).trim();
+
+            // CHECK 1: Is the part before colon a condition? (e.g., "Neu het hang: xxx")
+            if (isConditionPrefix(before)) {
                 condition = before;
-                const aa = extractAA(after, lastActor);
-                actor = aa.actor;
-                action = aa.action || after;
-            } else {
-                condition = line;
-                actor = lastActor;
-                action = line.replace(COND_PREFIXES, '').trim();
-            }
-            lastActor = actor;
-            steps.push({ actor, action, condition });
-            return;
-        }
-
-        // CASE 3: "Actor: Action" format
-        const colonMatch = line.match(/^([^:]+):(.+)$/);
-        if (colonMatch) {
-            const prefix = colonMatch[1].trim();
-            const rest = colonMatch[2].trim();
-
-            // Check if prefix is a condition keyword, even without diacritics
-            if (COND_PREFIXES.test(prefix + ' ')) {
-                condition = prefix;
-                const aa = extractAA(rest, lastActor);
+                const aa = matchActor(after, lastActor);
                 actor = aa.actor;
                 action = aa.action;
                 lastActor = actor;
@@ -109,11 +95,20 @@ function parseDescription(text) {
                 return;
             }
 
-            actor = prefix;
-            action = rest;
+            // CHECK 2: Normal "Actor: Action" pattern
+            actor = before;
+            action = after;
         } else {
-            // CASE 4: Try to match "Actor verb Object" pattern
-            const aa = extractAA(line, lastActor);
+            // No colon — check if whole line is a condition
+            if (isConditionPrefix(line)) {
+                condition = line;
+                actor = lastActor;
+                action = stripCondPrefix(line);
+                steps.push({ actor, action, condition });
+                return;
+            }
+            // Try to match actor at start
+            const aa = matchActor(line, lastActor);
             actor = aa.actor;
             action = aa.action;
         }
@@ -126,11 +121,11 @@ function parseDescription(text) {
     return steps;
 }
 
-function extractAA(text, fallback) {
-    for (const actor of KNOWN_ACTORS) {
-        if (text.toLowerCase().startsWith(actor.toLowerCase())) {
-            const rest = text.substring(actor.length).trim().replace(/^[\s,.:]+/, '');
-            if (rest) return { actor, action: rest };
+function matchActor(text, fallback) {
+    for (const a of KNOWN_ACTORS) {
+        if (text.toLowerCase().startsWith(a.toLowerCase())) {
+            const rest = text.substring(a.length).trim().replace(/^[\s,.:]+/, '');
+            if (rest) return { actor: a, action: rest };
         }
     }
     return { actor: fallback || 'Hệ thống', action: text };
