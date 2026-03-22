@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BPMN Process Designer — Professional BA Tool</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <rect x="2" y="2" width="24" height="24" rx="6" stroke="#6366F1" stroke-width="2.5" />
+                    <rect x="7" y="7" width="6" height="6" rx="1" fill="#6366F1" />
+                    <rect x="15" y="7" width="6" height="6" rx="1" fill="#A5B4FC" />
+                    <rect x="7" y="15" width="6" height="6" rx="1" fill="#A5B4FC" />
+                    <rect x="15" y="15" width="6" height="6" rx="1" fill="#6366F1" />
+                </svg>
+            </div>
+            <div>
+                <h1 class="header-title">Process Designer</h1>
+                <p class="header-sub">Transform natural language into standard BPMN 2.0 diagrams.</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="search-box">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="M21 21l-4.35-4.35" />
+                </svg>
+                <input type="text" placeholder="Search..." id="searchInput">
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== STEP INDICATOR ===== -->
+    <div class="step-bar">
+        <div class="step-item active" data-step="1">
+            <span class="step-num">Step 1</span>
+            <span class="step-label">Input Description</span>
+        </div>
+        <div class="step-divider"></div>
+        <div class="step-item" data-step="2">
+            <span class="step-num">Step 2</span>
+            <span class="step-label">Review Logic</span>
+        </div>
+        <div class="step-divider"></div>
+        <div class="step-item" data-step="3">
+            <span class="step-num">Step 3</span>
+            <span class="step-label">BPMN Diagram</span>
+        </div>
+    </div>
+
+    <!-- ===== STEP 1: INPUT DESCRIPTION ===== -->
+    <div class="step-panel active" id="step1">
+        <div class="step-content narrow">
+            <div class="form-group">
+                <label class="form-label">Process Title</label>
+                <input type="text" class="form-input" id="processTitle" placeholder="Untitled Process"
+                    value="Untitled Process">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Describe your process</label>
+                <textarea class="form-textarea" id="processDesc" rows="12"
+                    placeholder="Mô tả quy trình của bạn...&#10;&#10;Ví dụ:&#10;Khách hàng gửi đơn đặt hàng.&#10;Nhân viên bán hàng nhận đơn hàng mới.&#10;Nhân viên bán hàng kiểm tra tồn kho.&#10;Nếu hết hàng: Thông báo cho khách hàng và hủy đơn.&#10;Nếu còn hàng: Chuẩn bị hàng hóa, đóng gói và dán nhãn vận chuyển.&#10;Giao hàng cho đơn vị vận chuyển.&#10;Đơn vị vận chuyển vận chuyển hàng hóa.&#10;Hệ thống đánh dấu đơn hàng hoàn thành nếu giao hàng thành công."></textarea>
+                <p class="form-hint">Tip: Be specific about actors (who does what) and conditions (if/else logic).</p>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" onclick="analyzeProcess()">
+                    Analyze Process <span class="btn-arrow">→</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== STEP 2: REVIEW LOGIC ===== -->
+    <div class="step-panel" id="step2">
+        <div class="step-content wide">
+            <div class="logic-table-wrap">
+                <table class="logic-table" id="logicTable">
+                    <thead>
+                        <tr>
+                            <th class="col-num">#</th>
+                            <th class="col-actor">Actor</th>
+                            <th class="col-action">Action</th>
+                            <th class="col-condition">Condition</th>
+                            <th class="col-del"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="logicBody"></tbody>
+                </table>
+            </div>
+            <button class="add-step-btn" onclick="addLogicRow()">
+                <span>+</span> Add Step
+            </button>
+            <div class="form-actions dual">
+                <button class="btn btn-ghost" onclick="goToStep(1)">← Back</button>
+                <button class="btn btn-primary" onclick="generateDiagram()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                        <path d="M2 17l10 5 10-5" />
+                        <path d="M2 12l10 5 10-5" />
+                    </svg>
+                    Generate Diagram
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== STEP 3: BPMN DIAGRAM ===== -->
+    <div class="step-panel" id="step3">
+        <div class="diagram-layout">
+            <!-- Toolbar -->
+            <div class="toolbar" id="toolbar">
+                <div class="tool-section">
+                    <button class="tool-btn active" data-tool="select" title="Select & Move">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z" />
+                        </svg>
+                    </button>
+                    <button class="tool-btn" data-tool="move" title="Pan Canvas">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M5 9l-3 3 3 3" />
+                            <path d="M9 5l3-3 3 3" />
+                            <path d="M15 19l-3 3-3-3" />
+                            <path d="M19 9l3 3-3 3" />
+                            <line x1="2" y1="12" x2="22" y2="12" />
+                            <line x1="12" y1="2" x2="12" y2="22" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="tool-divider"></div>
+                <div class="tool-section">
+                    <span class="tool-label">Events</span>
+                    <button class="tool-btn" data-tool="startEvent" title="Start Event">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="9" fill="none" stroke="#22C55E" stroke-width="2" />
+                        </svg>
+                    </button>
+                    <button class="tool-btn" data-tool="endEvent" title="End Event">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="9" fill="none" stroke="#EF4444" stroke-width="3" />
+                        </svg>
+                    </button>
+                    <button class="tool-btn" data-tool="intermediateEvent" title="Intermediate Event">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="9" fill="none" stroke="#F59E0B" stroke-width="2" />
+                            <circle cx="12" cy="12" r="6" fill="none" stroke="#F59E0B" stroke-width="1" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="tool-divider"></div>
+                <div class="tool-section">
+                    <span class="tool-label">Activities</span>
+                    <button class="tool-btn" data-tool="task" title="Task">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <rect x="2" y="5" width="20" height="14" rx="3" fill="none" stroke="currentColor"
+                                stroke-width="2" />
+                        </svg>
+                    </button>
+                    <button class="tool-btn" data-tool="subProcess" title="Sub-Process">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <rect x="2" y="5" width="20" height="14" rx="3" fill="none" stroke="currentColor"
+                                stroke-width="2" />
+                            <rect x="9" y="15" width="6" height="4" rx="1" fill="none" stroke="currentColor"
+                                stroke-width="1.5" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="tool-divider"></div>
+                <div class="tool-section">
+                    <span class="tool-label">Gateways</span>
+                    <button class="tool-btn" data-tool="xorGateway" title="XOR Gateway (Exclusive)">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <path d="M12 2l10 10-10 10L2 12z" fill="none" stroke="currentColor" stroke-width="2" />
+                            <path d="M9 9l6 6M15 9l-6 6" stroke="currentColor" stroke-width="1.5" />
+                        </svg>
+                    </button>
+                    <button class="tool-btn" data-tool="andGateway" title="AND Gateway (Parallel)">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <path d="M12 2l10 10-10 10L2 12z" fill="none" stroke="currentColor" stroke-width="2" />
+                            <path d="M12 7v10M7 12h10" stroke="currentColor" stroke-width="1.5" />
+                        </svg>
+                    </button>
+                    <button class="tool-btn" data-tool="orGateway" title="OR Gateway (Inclusive)">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <path d="M12 2l10 10-10 10L2 12z" fill="none" stroke="currentColor" stroke-width="2" />
+                            <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.5" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="tool-divider"></div>
+                <div class="tool-section">
+                    <span class="tool-label">Containers</span>
+                    <button class="tool-btn" data-tool="pool" title="Pool">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <rect x="1" y="3" width="22" height="18" rx="2" fill="none" stroke="currentColor"
+                                stroke-width="2" />
+                            <line x1="6" y1="3" x2="6" y2="21" stroke="currentColor" stroke-width="1.5" />
+                        </svg>
+                    </button>
+                    <button class="tool-btn" data-tool="lane" title="Lane">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <rect x="1" y="3" width="22" height="18" rx="2" fill="none" stroke="currentColor"
+                                stroke-width="1.5" stroke-dasharray="3 2" />
+                            <line x1="1" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="1.5" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="tool-divider"></div>
+                <div class="tool-section">
+                    <span class="tool-label">Data</span>
+                    <button class="tool-btn" data-tool="dataObject" title="Data Object">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <path d="M4 4h10l6 6v10a2 2 0 01-2 2H4V4z" fill="none" stroke="currentColor"
+                                stroke-width="2" />
+                            <path d="M14 4v6h6" fill="none" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                    </button>
+                    <button class="tool-btn" data-tool="annotation" title="Text Annotation">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <path d="M8 3v18M8 3h12M8 21h12" fill="none" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Canvas -->
+            <div class="canvas-container" id="canvasContainer">
+                <svg id="bpmnCanvas" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                    <defs>
+                        <marker id="arrowHead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
+                        </marker>
+                        <marker id="arrowHeadDash" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="none" stroke="#333" stroke-width="1" />
+                        </marker>
+                        <pattern id="gridPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+                            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#E5E7EB" stroke-width="0.5" />
+                        </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#gridPattern)" />
+                    <g id="bpmnLayer" transform="translate(0,0) scale(1)"></g>
+                </svg>
+
+                <!-- Zoom controls -->
+                <div class="zoom-controls">
+                    <button class="zoom-btn" onclick="zoomIn()" title="Zoom In">+</button>
+                    <span class="zoom-level" id="zoomLevel">100%</span>
+                    <button class="zoom-btn" onclick="zoomOut()" title="Zoom Out">−</button>
+                    <button class="zoom-btn" onclick="zoomFit()" title="Fit to Screen">⊡</button>
+                </div>
+            </div>
+
+            <!-- Properties Panel -->
+            <div class="properties-panel" id="propertiesPanel">
+                <h3 class="prop-title">Properties</h3>
+                <div class="prop-empty" id="propEmpty">Select an element to view its properties.</div>
+                <div class="prop-fields" id="propFields" style="display:none">
+                    <div class="prop-group">
+                        <label class="prop-label">Name</label>
+                        <input type="text" class="prop-input" id="propName">
+                    </div>
+                    <div class="prop-group">
+                        <label class="prop-label">Type</label>
+                        <input type="text" class="prop-input" id="propType" readonly>
+                    </div>
+                    <div class="prop-group">
+                        <label class="prop-label">Documentation</label>
+                        <textarea class="prop-input" id="propDoc" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom bar -->
+        <div class="diagram-footer">
+            <button class="btn btn-ghost" onclick="goToStep(2)">← Back to Logic</button>
+            <div class="footer-actions">
+                <button class="btn btn-outline" onclick="startOver()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="1 4 1 10 7 10" />
+                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+                    </svg>
+                    Start Over
+                </button>
+                <button class="btn btn-outline" onclick="downloadBPMN()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Download .bpmn
+                </button>
+                <button class="btn btn-primary" onclick="saveProcess()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+                        <polyline points="17 21 17 13 7 13 7 21" />
+                        <polyline points="7 3 7 8 15 8" />
+                    </svg>
+                    Save Process
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="bpmn-engine.js"></script>
+    <script src="bpmn-editor.js"></script>
+    <script src="bpmn-export.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

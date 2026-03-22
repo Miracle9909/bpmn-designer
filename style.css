@@ -1,0 +1,737 @@
+/* ============================================ */
+/* BPMN Process Designer — Professional BA CSS   */
+/* Clean, modern, Figma-inspired design          */
+/* ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #F8F9FB;
+    color: #1E293B;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== HEADER ===== */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background: #0F172A;
+    color: #fff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    flex-shrink: 0;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    background: rgba(99, 102, 241, 0.15);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.header-sub {
+    font-size: 12px;
+    color: #94A3B8;
+    font-weight: 400;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 6px 14px;
+    color: #94A3B8;
+}
+
+.search-box input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+    width: 160px;
+}
+
+.search-box input::placeholder {
+    color: #64748B;
+}
+
+/* ===== STEP BAR ===== */
+.step-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 16px 24px;
+    background: #fff;
+    border-bottom: 1px solid #E2E8F0;
+    flex-shrink: 0;
+}
+
+.step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 32px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.step-num {
+    font-size: 11px;
+    font-weight: 600;
+    color: #94A3B8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.step-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748B;
+}
+
+.step-item.active .step-num {
+    color: #6366F1;
+}
+
+.step-item.active .step-label {
+    color: #1E293B;
+}
+
+.step-item.active {
+    border-bottom: 2px solid #6366F1;
+    margin-bottom: -1px;
+}
+
+.step-item.completed .step-num {
+    color: #22C55E;
+}
+
+.step-item.completed .step-label {
+    color: #22C55E;
+}
+
+.step-divider {
+    width: 60px;
+    height: 1px;
+    background: #E2E8F0;
+    margin: 0 8px;
+}
+
+/* ===== STEP PANELS ===== */
+.step-panel {
+    display: none;
+    flex: 1;
+    overflow: auto;
+}
+
+.step-panel.active {
+    display: flex;
+    flex-direction: column;
+}
+
+.step-content {
+    margin: 0 auto;
+    padding: 32px 24px;
+    width: 100%;
+}
+
+.step-content.narrow {
+    max-width: 680px;
+}
+
+.step-content.wide {
+    max-width: 960px;
+}
+
+/* ===== FORMS ===== */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 6px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 15px;
+    color: #1E293B;
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #6366F1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #1E293B;
+    background: #fff;
+    resize: vertical;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-textarea:focus {
+    outline: none;
+    border-color: #6366F1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+.form-hint {
+    font-size: 12px;
+    color: #94A3B8;
+    margin-top: 8px;
+    font-style: italic;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+.form-actions.dual {
+    justify-content: space-between;
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: #6366F1;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
+}
+
+.btn-primary:hover {
+    background: #4F46E5;
+    transform: translateY(-1px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-ghost {
+    background: transparent;
+    color: #64748B;
+}
+
+.btn-ghost:hover {
+    color: #1E293B;
+    background: #F1F5F9;
+}
+
+.btn-outline {
+    background: #fff;
+    color: #334155;
+    border: 1px solid #E2E8F0;
+}
+
+.btn-outline:hover {
+    background: #F8FAFC;
+    border-color: #CBD5E1;
+}
+
+.btn-arrow {
+    font-size: 18px;
+    margin-left: 4px;
+}
+
+/* ===== LOGIC TABLE ===== */
+.logic-table-wrap {
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.logic-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.logic-table th {
+    background: #F8FAFC;
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748B;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid #E2E8F0;
+}
+
+.logic-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid #F1F5F9;
+    vertical-align: middle;
+}
+
+.logic-table tr:last-child td {
+    border-bottom: none;
+}
+
+.logic-table tr:hover td {
+    background: #FAFAFF;
+}
+
+.col-num {
+    width: 48px;
+    text-align: center;
+}
+
+.col-actor {
+    width: 25%;
+}
+
+.col-action {
+    width: 40%;
+}
+
+.col-condition {
+    width: 25%;
+}
+
+.col-del {
+    width: 40px;
+    text-align: center;
+}
+
+.logic-table input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px;
+    color: #1E293B;
+    background: transparent;
+    transition: all 0.15s;
+}
+
+.logic-table input:hover {
+    border-color: #E2E8F0;
+    background: #fff;
+}
+
+.logic-table input:focus {
+    outline: none;
+    border-color: #6366F1;
+    background: #fff;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+}
+
+.logic-table input::placeholder {
+    color: #CBD5E1;
+}
+
+.logic-table .row-num {
+    font-size: 13px;
+    font-weight: 600;
+    color: #94A3B8;
+    text-align: center;
+}
+
+.del-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    color: #CBD5E1;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+}
+
+.del-btn:hover {
+    background: #FEE2E2;
+    color: #EF4444;
+}
+
+.add-step-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px;
+    margin-top: 12px;
+    border: 2px dashed #E2E8F0;
+    border-radius: 10px;
+    background: transparent;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: #94A3B8;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.add-step-btn:hover {
+    border-color: #6366F1;
+    color: #6366F1;
+    background: #F5F3FF;
+}
+
+/* ===== DIAGRAM LAYOUT ===== */
+.diagram-layout {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+/* ===== TOOLBAR ===== */
+.toolbar {
+    width: 54px;
+    background: #fff;
+    border-right: 1px solid #E2E8F0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 0;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.tool-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 0;
+}
+
+.tool-label {
+    font-size: 8px;
+    font-weight: 600;
+    color: #94A3B8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+}
+
+.tool-btn {
+    width: 38px;
+    height: 38px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: #475569;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+}
+
+.tool-btn:hover {
+    background: #F1F5F9;
+    border-color: #E2E8F0;
+}
+
+.tool-btn.active {
+    background: #EEF2FF;
+    border-color: #6366F1;
+    color: #6366F1;
+}
+
+.tool-divider {
+    width: 32px;
+    height: 1px;
+    background: #E2E8F0;
+    margin: 4px 0;
+}
+
+/* ===== CANVAS ===== */
+.canvas-container {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: #FAFBFC;
+    cursor: default;
+}
+
+#bpmnCanvas {
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+}
+
+/* ===== ZOOM ===== */
+.zoom-controls {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #fff;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.zoom-btn {
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.zoom-btn:hover {
+    background: #F1F5F9;
+}
+
+.zoom-level {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748B;
+    min-width: 40px;
+    text-align: center;
+}
+
+/* ===== PROPERTIES PANEL ===== */
+.properties-panel {
+    width: 240px;
+    background: #fff;
+    border-left: 1px solid #E2E8F0;
+    padding: 16px;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.prop-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1E293B;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.prop-empty {
+    font-size: 12px;
+    color: #94A3B8;
+    text-align: center;
+    padding: 24px 0;
+}
+
+.prop-group {
+    margin-bottom: 12px;
+}
+
+.prop-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748B;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.prop-input {
+    width: 100%;
+    padding: 7px 10px;
+    border: 1px solid #E2E8F0;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 12px;
+    color: #1E293B;
+}
+
+.prop-input:focus {
+    outline: none;
+    border-color: #6366F1;
+}
+
+/* ===== DIAGRAM FOOTER ===== */
+.diagram-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: #fff;
+    border-top: 1px solid #E2E8F0;
+    flex-shrink: 0;
+}
+
+.footer-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* ===== BPMN SHAPES ===== */
+.bpmn-task {
+    cursor: move;
+}
+
+.bpmn-task rect {
+    fill: #fff;
+    stroke: #334155;
+    stroke-width: 1.5;
+    rx: 8;
+}
+
+.bpmn-task:hover rect {
+    stroke: #6366F1;
+    stroke-width: 2;
+    filter: drop-shadow(0 2px 4px rgba(99, 102, 241, 0.2));
+}
+
+.bpmn-task text {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    fill: #1E293B;
+    text-anchor: middle;
+    dominant-baseline: central;
+}
+
+.bpmn-event {
+    cursor: move;
+}
+
+.bpmn-gateway {
+    cursor: move;
+}
+
+.bpmn-pool rect {
+    fill: #fff;
+    stroke: #334155;
+    stroke-width: 1.5;
+}
+
+.bpmn-lane rect {
+    fill: rgba(245, 247, 250, 0.5);
+    stroke: #CBD5E1;
+    stroke-width: 1;
+}
+
+.bpmn-lane-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    fill: #64748B;
+    writing-mode: tb;
+    text-anchor: middle;
+}
+
+.bpmn-flow {
+    stroke: #334155;
+    stroke-width: 1.5;
+    fill: none;
+    marker-end: url(#arrowHead);
+}
+
+.bpmn-flow-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    fill: #64748B;
+}
+
+/* Selected state */
+.bpmn-selected rect,
+.bpmn-selected circle,
+.bpmn-selected path {
+    stroke: #6366F1 !important;
+    stroke-width: 2 !important;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .properties-panel {
+        display: none;
+    }
+
+    .toolbar {
+        width: 44px;
+    }
+
+    .step-item {
+        padding: 4px 16px;
+    }
+
+    .step-divider {
+        width: 30px;
+    }
+}
